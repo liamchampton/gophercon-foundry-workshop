@@ -16,11 +16,13 @@ A simple cupcake-ordering agent that:
 .
 ├── workshop/
 │   └── workshop.md              # Step-by-step lab manual
+├── agent-framework/             # Your working folder for the workshop
+│   ├── .env                     # Fill in your Foundry endpoint + key here
+│   └── requirements.txt         # Python dependencies
 └── sample/
-    ├── agent.py                 # Final agent implementation
+    ├── agent.py                 # Final reference implementation
     ├── instructions.md          # System prompt for the agent
-    ├── requirements.txt         # Python dependencies
-    └── .env.sample              # Template for environment variables
+    └── requirements.txt         # Python dependencies
 ```
 
 ## Prerequisites
@@ -31,19 +33,19 @@ A simple cupcake-ordering agent that:
 
 ## Quick start
 
-1. Follow the [workshop lab manual](workshop/workshop.md).
-2. Or, to run the finished agent directly:
+1. Follow the [workshop lab manual](workshop/workshop.md) to build the agent step-by-step in `agent-framework/`.
+2. Or, to run the finished reference agent directly:
 
    ```bash
    cd sample
-   cp .env.sample .env          # then fill in your Foundry endpoint + key
    pip install -r requirements.txt
+   # Create a .env file with the variables listed below
    python agent.py
    ```
 
 ## Environment variables
 
-Configured in `sample/.env` (see `.env.sample`):
+Configured in `agent-framework/.env` (already present - just edit it):
 
 | Variable | Description |
 |---|---|

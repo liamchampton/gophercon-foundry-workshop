@@ -23,9 +23,9 @@ in a moment.
      with. You can switch deployments here without leaving the page.
    - **Instructions** (system prompt) - the box on the left where you set
      the agent's persona and rules. Try pasting
-     'You are a pirate. Answer every question in pirate slang.' and chat
+     `You are a sentient cupcake. Answer every question with frosting-related puns.` and chat
      again to see the effect.
-   - **Chat** - the main conversation area. Type 'Hello world' and verify
+   - **Chat** - the main conversation area. Type `Hello world` and verify
      the model responds. Use it to iterate on prompts before committing
      them to code.
    - **View code** - opens a side panel with ready-to-paste snippets

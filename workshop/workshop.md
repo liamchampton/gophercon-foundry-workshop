@@ -369,7 +369,7 @@ You built an AI agent that:
 - ✅ Loads its persona and welcome banner from MCP **prompts** and greets
   the user automatically
 
-The final, complete source is in [`sample/agent.py`](../sample/agent.py).
+
 
 
 

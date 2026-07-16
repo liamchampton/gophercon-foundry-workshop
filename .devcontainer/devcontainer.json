@@ -1,18 +1,11 @@
 {
-  "name": "Go with Azure CLI & Docker",
+  "name": "Go Image",
   "image": "mcr.microsoft.com/devcontainers/go:2.1.5-1.26-bookworm",
-  "features": {
-    "ghcr.io/devcontainers/features/azure-cli:1": {},
-    "ghcr.io/devcontainers/features/docker-in-docker:4.0.0": {
-      "moby": false
-    }
   },
   "customizations": {
     "vscode": {
       "extensions": [
         "golang.go",
-        "ms-azuretools.vscode-docker",
-        "ms-vscode.azurecli",
         "GitHub.copilot",
         "GitHub.copilot-chat"
       ]

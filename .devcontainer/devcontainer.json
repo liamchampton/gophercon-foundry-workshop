@@ -1,7 +1,6 @@
 {
   "name": "Go Image",
   "image": "mcr.microsoft.com/devcontainers/go:2.1.5-1.26-bookworm",
-  },
   "customizations": {
     "vscode": {
       "extensions": [

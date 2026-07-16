@@ -4,13 +4,13 @@ Your working folder for the workshop. You build the **Sparkles** cupcake-orderin
 
 ## Contents
 
-- `agent.py` - Empty starter. You fill this in during the workshop.
-- `requirements.txt` - Python dependencies (`agent-framework`, `agent-framework-foundry`, `python-dotenv`).
-- `.env` - Your Foundry endpoint, API key, and deployment name. Edit this with values from the Foundry portal.
+- `main.go` - Empty starter. You fill this in during the workshop.
+- `go.mod` / `go.sum` - Go dependencies (Microsoft Agent Framework, OpenAI Go SDK, MCP Go SDK, and `godotenv`).
+- `.env` - Your Foundry model endpoint, API key, and deployment name.
 
 ## Run
 
 ```bash
-pip install -r requirements.txt
-python agent.py
+go mod download
+go run .
 ```

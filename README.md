@@ -1,12 +1,12 @@
-# Code with Claude - Microsoft Foundry Workshop
+# Microsoft Agent Framework for Go - Foundry Workshop
 
-Build an AI agent with **Microsoft Foundry** and the **Microsoft Agent Framework** that uses a Claude model and calls tools through an MCP server.
+Build an AI agent in Go with **Microsoft Foundry** that uses a GPT model and calls tools through an MCP server, using [Microsoft Agent Framework for Go](https://github.com/microsoft/agent-framework-go).
 
 ## What you will build
 
 An agent for **Sparkles**, a friendly cupcake shop, that:
 
-- Uses **Claude Sonnet 4.6** deployed in Microsoft Foundry
+- Uses a **GPT model** (e.g. `gpt-5.5`) deployed in Microsoft Foundry
 - Loads its persona and welcome banner from MCP **prompts**
 - Calls live tools from the **Cupcake Store MCP server**
 
@@ -22,20 +22,20 @@ An agent for **Sparkles**, a friendly cupcake shop, that:
 │   ├── workshop.md              # Step-by-step lab manual
 │   ├── skillable.md             # Skillable lab instructions
 │   └── sample-code/             # Final reference implementation
-│       ├── agent.py
-│       ├── requirements.txt
+│       ├── main.go
+│       ├── go.mod / go.sum
 │       └── .env.sample
 └── sparkles-agent/              # Your working folder for the workshop
-    ├── .env                     # Fill in your Foundry endpoint + key here
-    ├── agent.py                 # Empty starter - you build it up during the workshop
-    └── requirements.txt         # Python dependencies
+    ├── .env                     # Fill in your model endpoint, API key, and deployment name
+    ├── main.go                  # Empty starter - you build it up during the workshop
+    └── go.mod / go.sum          # Go dependencies
 ```
 
 ## Prerequisites
 
 - An Azure subscription with access to **Microsoft Foundry**
-- A deployed Claude model (e.g. `claude-sonnet-4-6`)
-- Python 3.10+
+- A deployed GPT model (e.g. `gpt-5.5`)
+- Go 1.25+
 
 ## Quick start
 
@@ -44,9 +44,9 @@ An agent for **Sparkles**, a friendly cupcake shop, that:
 
    ```bash
    cd workshop/sample-code
-   pip install -r requirements.txt
+   go mod download
    cp .env.sample .env   # then edit .env with the variables listed below
-   python agent.py
+   go run .
    ```
 
 ## Environment variables
@@ -55,9 +55,9 @@ Configured in `sparkles-agent/.env` (already present - just edit it):
 
 | Variable | Description |
 | --- | --- |
-| `FOUNDRY_ENDPOINT` | Target URI of your Foundry deployment, e.g. `https://<resource>.services.ai.azure.com/anthropic` |
-| `FOUNDRY_API_KEY` | API key for the Foundry deployment |
-| `FOUNDRY_MODEL_DEPLOYMENT` | Deployment name (e.g. `claude-sonnet-4-6`) |
+| `FOUNDRY_ENDPOINT` | Model target URI, e.g. `https://<resource>.services.ai.azure.com/openai/v1` |
+| `FOUNDRY_API_KEY` | API key for the model deployment |
+| `FOUNDRY_MODEL_DEPLOYMENT` | Model deployment name (e.g. `gpt-5.5`) |
 
 ## Troubleshooting
 

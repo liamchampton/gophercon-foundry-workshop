@@ -1,4 +1,4 @@
-# Build AI Agents using Claude in Microsoft Foundry
+# Build AI Agents with Microsoft Agent Framework for Go
 
 Welcome to **Sparkles**, the friendliest little cupcake shop on the
 internet. Sparkles has a problem most bakeries would love to have: too
@@ -8,12 +8,13 @@ greet guests, walk them through the day's flavors, take their order, and
 hand them a freshly baked cupcake on the way out.
 
 You'll start by logging in to **Microsoft Foundry**, where you'll meet
-**Claude Sonnet** waiting for you in the Playground. After a quick chat
-to make sure you two get along, you'll grab the deployment's endpoint and
-key and bring them home to your code editor.
+a **GPT model** waiting for you in the Playground. After a quick chat,
+you'll bring the model endpoint, API key, and deployment name into your code
+editor.
 
-From there, you'll build the agent up one small step at a time using the
-**Microsoft Agent Framework**. First, a bare-bones "hello world" agent
+From there, you'll build the agent up one small step at a time in Go,
+using the public preview of **Microsoft Agent Framework for Go** and the
+official MCP Go SDK. First, a bare-bones "hello world" agent
 that proves you can reach the model. Next, you'll plug it into the
 **Cupcake Store MCP server** so it gains real superpowers - listing
 flavors, checking stock, placing orders. Finally, you'll let the MCP
@@ -21,15 +22,15 @@ server hand the agent its own persona and welcome banner, turning a
 generic chatbot into Sparkles itself.
 
 By the end, you'll have ordered a cupcake from an agent you built from
-scratch - and learned how Foundry, the Agent Framework, and MCP fit
+scratch - and learned how Foundry, Go, and MCP fit
 together along the way. 
 
 > **What is Microsoft Foundry?** Foundry is Microsoft's hosted platform
 > for shipping AI applications. It's where you deploy models (OpenAI,
-> Anthropic, Mistral, your own fine-tunes), give them an endpoint and a
-> key, and then wire them into your code. Think of it as the cloud
+> Anthropic, Mistral, your own fine-tunes), organize them in projects, and
+> wire them into your code. Think of it as the cloud
 > control panel for the brains of your agent.    
-> [Learn more about Microsoft Foundry](https://learn.microsoft.com/en-us/azure/foundry/what-is-foundry)
+> [Learn more about Microsoft Foundry](https://learn.microsoft.com/azure/foundry/what-is-foundry)
 
 ---
 

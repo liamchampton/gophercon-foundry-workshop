@@ -1,105 +1,114 @@
-## Part 4 - Step 2: Connect to the Cupcake Store MCP Server
+## Step 2 - Give the Agent MCP Tools
 
-A chatbot that only chats is just an expensive parrot. To actually *do*
-things - check what flavors are in stock, place an order, mark it ready
-for pickup - the agent needs **tools**.
+Agent Framework can adapt tools discovered by an MCP client and execute them
+automatically. You do not need to parse function calls or build a tool loop.
 
-> **What is MCP?** The **Model Context Protocol** is an open standard
-> for letting AI agents talk to external systems. An MCP server publishes
-> a set of tools (functions the agent can call), prompts (reusable
-> instruction snippets), and resources (data) over HTTP. Your agent just
-> needs the URL - the framework handles discovery and invocation. The
-> Cupcake Store team already runs an MCP server with all the cupcake
-> tools you need.
+### Before You Start
 
-Two changes to your 'agent.py':
+A **credential** is information an application uses to prove that it is
+allowed to call a service. In Step 1, your '.env' file provided the Foundry
+credential in 'FOUNDRY_API_KEY'. The call to 'godotenv.Load()' loads that value
+for the Go program.
 
-1. Import 'MCPStreamableHTTPTool', point it at the server's URL, and call 'connect()'.
-2. Pass it to the 'Agent' via 'tools='.
+You do not need to create or copy another credential in this step. The Cupcake
+Store MCP endpoint used by this workshop does not require sign-in.
 
-The agent will discover the available tools automatically and decide when
-to call them based on what you ask.
+### 1. Add the MCP Imports
 
-```python-notype
-"""Sparkles - The Cupcake ordering agent"""
+In 'main.go', find the 'import' block. Add these two imports with the other
+third-party imports:
 
-import asyncio
-import os
-
-from dotenv import load_dotenv
-
-from agent_framework import Agent, MCPStreamableHTTPTool   # 👈 updated
-from agent_framework.foundry import AnthropicFoundryClient
-
-# 1. Load environment variables from .env
-load_dotenv()
-
-async def main() -> None:
-    # 2. Configure the chat model (Claude on Microsoft Foundry)
-    chat_client = AnthropicFoundryClient(
-        model=os.environ["FOUNDRY_MODEL_DEPLOYMENT"],
-        api_key=os.environ["FOUNDRY_API_KEY"],
-        base_url=os.environ["FOUNDRY_ENDPOINT"],
-    )
-
-    # 3. Connect to the Cupcake Store MCP server                 👈 new
-    mcp_tool = MCPStreamableHTTPTool(
-        name="cupcake-store",
-        url="https://ca-cupcake-mcp.jollyplant-ed217b0d.eastus.azurecontainerapps.io/mcp/",
-    )
-    await mcp_tool.connect()
-
-    # 4. Create the agent
-    agent = Agent(
-        client=chat_client,
-        name="cupcake-agent",
-        tools=mcp_tool,                                          # 👈 new
-    )
-
-    # 5. Start a chat session and talk to the agent
-    session = agent.create_session()
-    print("Type 'exit' to quit.\n")
-
-    while True:
-        user_input = input("\033[1;35mYou:\033[0m\n")
-        if user_input.lower() in ("exit", "quit"):
-            break
-
-        response = await agent.run(user_input, session=session)
-        print(f"\n\033[1;35mAssistant:\033[0m\n{response.text}\n")
-
-    await mcp_tool.close()
-
-
-if __name__ == "__main__":
-    asyncio.run(main())
+```go-notype
+"github.com/microsoft/agent-framework-go/tool/mcptool"
+mcpsdk "github.com/modelcontextprotocol/go-sdk/mcp"
 ```
 
-Make sure you save the program after pasting in the code. If you see a ⚫️ next to the file in VS Code, that mean's it's not yet saved. You can use File > Save or your standard keyboard shortcut for saving.
+### 2. Add the Cupcake Store Address
 
-**Run it:**
+Add this constant after the 'import' block and before 'func main()':
 
-In the VS Code terminal at the bottom of the editor, run:
+```go-notype
+const cupcakeMCPURL = "https://ca-cupcake-mcp.jollyplant-ed217b0d.eastus.azurecontainerapps.io/mcp/"
+```
+
+This URL tells the MCP client where to find the Cupcake Store server.
+
+### 3. Connect to MCP and Discover Its Tools
+
+In 'main', find the code that creates 'client'. Immediately after the closing
+')' of 'openai.NewClient(...)', and **before** the line that starts
+'sparkles := openaiprovider.NewAgent(', add:
+
+```go-notype
+mcpSession, err := mcptool.Connect(ctx, &mcpsdk.StreamableClientTransport{
+    Endpoint: cupcakeMCPURL,
+})
+if err != nil {
+    fmt.Fprintln(os.Stderr, "failed to connect to MCP server:", err)
+    os.Exit(1)
+}
+defer mcpSession.Close()
+
+tools, err := mcptool.ListTools(ctx, mcpSession)
+if err != nil {
+    fmt.Fprintln(os.Stderr, "failed to list tools:", err)
+    os.Exit(1)
+}
+```
+
+'mcpSession' is the connection to the Cupcake Store. 'ListTools' asks the
+server which actions it offers and converts them into tools Agent Framework
+can use.
+
+The order matters: the program must create 'tools' before it creates the agent.
+
+### 4. Give the Tools to Sparkles
+
+Find the 'openaiprovider.AgentConfig{...}' block inside
+'openaiprovider.NewAgent'. Replace only that configuration block with:
+
+```go-notype
+openaiprovider.AgentConfig{
+    Model:        os.Getenv("FOUNDRY_MODEL_DEPLOYMENT"),
+    Instructions: "Help customers choose and order cupcakes. Use the available tools.",
+    Config: agent.Config{
+        Name:  "Sparkles",
+        Tools: tools,
+    },
+},
+```
+
+Your 'main' function should now do these things in order:
+
+1. Load settings from '.env'.
+2. Create the Foundry model client.
+3. Connect to the Cupcake Store MCP server and discover 'tools'.
+4. Create Sparkles with those tools.
+5. Create the chat session and start the input loop.
+
+### 5. Run and Test the Agent
+
+In the terminal, run:
 
 ```bash
-python agent.py
+go mod tidy && go run .
 ```
 
-**Try it:**
+Try these prompts:
 
-Send the message `What flavors do you have today?` to the agent.
+- 'What cupcake flavors are available?'
+- 'Which are in stock?'
+- 'Order one for me.'
 
-Do *not* order a cupcake yet! This step is just to confirm that the agent can call the MCP tools to check inventory and answer questions about flavors. Don't worry, you'll get to order a cupcake in the next step!
+The model decides when a tool is needed. Agent Framework calls the MCP tool,
+sends its result back to the model, and returns the final response.
 
-Type 'exit' when you're done to stop the agent.
-
-The agent is now calling MCP tools on the Cupcake Store server. But it's
-still acting like a generic assistant - it has no persona yet.
+If Go reports 'undefined: tools', move the MCP connection and 'ListTools' code
+above 'openaiprovider.NewAgent'.
 
 ---
 
-✅ **In this step you have:** connected your agent to the Cupcake Store
-MCP server, and watched it call live tools to answer real cupcake
-questions.
+✅ **In this step you have:** connected an MCP server, discovered its tools,
+and given them to Agent Framework for automatic execution.
 
-➡️ Click **Next** to give the agent its persona and welcome banner.
+➡️ Click **Next** to load Sparkles' persona from MCP.

@@ -1,7 +1,7 @@
 ## Part 2 - Find a Model and Test It
 
 A quick word on vocabulary before you click around: a **model** (like
-claude-sonnet-4) is the underlying AI. A **deployment** is your
+gpt-5.5) is the underlying AI. A **deployment** is your
 personal, named instance of that model running in your project, with its
 own endpoint, key, and rate limits. Your code talks to the *deployment
 name*, not the model name - that's the bit you'll wire into your '.env'
@@ -10,7 +10,7 @@ in a moment.
 1. In the top navigation, make sure **Build** is selected.
 2. In the left-hand navigation, click **Models**.
 3. On the **Deployments** tab you'll see all models deployed to this project.
-   For this workshop, pick **claude-sonnet-4-6**.
+   For this workshop, pick a deployed GPT model (e.g. **gpt-5.5**).
    The **Name** column is the **deployment name** - you'll need it later.
 4. Click the deployment - you'll land directly in the **Playground** and can
    chat with it right there.
@@ -29,14 +29,14 @@ in a moment.
      the model responds. Use it to iterate on prompts before committing
      them to code.
    - **Code** - opens a side panel with ready-to-paste snippets
-     (Python, curl, etc.) that show exactly how to call this deployment
+     (curl, Python, etc.) that show exactly how to call this deployment
      from your own app, including the endpoint and headers.
 
 ![Deployed models](../images/02b-playground-hello.png)
 
 ---
 
-✅ **In this step you have:** picked the **claude-sonnet-4-6** deployment,
+✅ **In this step you have:** picked a GPT deployment,
 opened the Playground, and chatted with the model to confirm it works.
 
 ➡️ Click **Next** to grab the endpoint, key, and deployment name you'll

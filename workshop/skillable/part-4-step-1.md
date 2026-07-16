@@ -1,84 +1,84 @@
-## Part 4 - Step 1: Hello World Agent
+## Step 1 - Hello World Agent
 
-Start with a minimal agent that just talks to the model. No tools, no
-persona - just confirm we can reach Foundry. Three pieces show up here
-that you'll see in every agent you build:
+Create a Microsoft Foundry-backed agent and reuse one Agent Framework session
+for the whole conversation.
 
-- **Chat client** - the connection to the model. 'AnthropicFoundryClient'
-  knows how to call your Claude deployment on Foundry using the values
-  from '.env'.
-- **Agent** - wraps the chat client (and later, tools and instructions).
-- **Session** - holds the conversation history so the agent remembers
-  what was said earlier in the chat.
+Replace 'main.go' with:
 
-Paste this into 'agent.py':
+```go-notype
+// Sparkles - The Cupcake ordering agent
+package main
 
-```python-notype
-"""Sparkles - The Cupcake ordering agent"""
+import (
+    "bufio"
+    "context"
+    "fmt"
+    "os"
+    "strings"
 
-import asyncio
-import os
+    "github.com/joho/godotenv"
+    "github.com/microsoft/agent-framework-go/agent"
+    "github.com/microsoft/agent-framework-go/provider/openaiprovider"
+    "github.com/openai/openai-go/v3"
+    "github.com/openai/openai-go/v3/option"
+)
 
-from dotenv import load_dotenv
+func main() {
+    _ = godotenv.Load()
+    ctx := context.Background()
 
-from agent_framework import Agent
-from agent_framework.foundry import AnthropicFoundryClient
-
-# 1. Load environment variables from .env
-load_dotenv()
-
-
-async def main() -> None:
-    # 2. Configure the chat model (Claude on Microsoft Foundry)
-    chat_client = AnthropicFoundryClient(
-        model=os.environ["FOUNDRY_MODEL_DEPLOYMENT"],
-        api_key=os.environ["FOUNDRY_API_KEY"],
-        base_url=os.environ["FOUNDRY_ENDPOINT"],
+    client := openai.NewClient(
+        option.WithBaseURL(os.Getenv("FOUNDRY_ENDPOINT")),
+        option.WithAPIKey(os.Getenv("FOUNDRY_API_KEY")),
     )
 
-    # 3. Create the agent
-    agent = Agent(
-        client=chat_client,
-        name="cupcake-agent",
+    sparkles := openaiprovider.NewAgent(
+        client,
+        openaiprovider.AgentConfig{
+            Model: os.Getenv("FOUNDRY_MODEL_DEPLOYMENT"),
+            Config: agent.Config{Name: "Sparkles"},
+        },
     )
+    session, err := sparkles.CreateSession(ctx)
+    if err != nil {
+        fmt.Fprintln(os.Stderr, "failed to create agent session:", err)
+        os.Exit(1)
+    }
 
-    # 4. Start a chat session and talk to the agent
-    session = agent.create_session()
-    print("Type 'exit' to quit.\n")
-
-    while True:
-        user_input = input("\033[1;35mYou:\033[0m\n")
-        if user_input.lower() in ("exit", "quit"):
+    fmt.Println("Type 'exit' to quit.")
+    scanner := bufio.NewScanner(os.Stdin)
+    for {
+        fmt.Print("\033[1;35mYou:\033[0m\n")
+        if !scanner.Scan() {
             break
+        }
+        input := strings.TrimSpace(scanner.Text())
+        if input == "exit" || input == "quit" {
+            break
+        }
 
-        response = await agent.run(user_input, session=session)
-        print(f"\n\033[1;35mAssistant:\033[0m\n{response.text}\n")
-
-
-if __name__ == "__main__":
-    asyncio.run(main())
+        response, err := sparkles.RunText(ctx, input, agent.WithSession(session)).Collect()
+        if err != nil {
+            fmt.Fprintln(os.Stderr, "error:", err)
+            continue
+        }
+        fmt.Printf("\n\033[1;35mAssistant:\033[0m\n%s\n\n", response)
+    }
+}
 ```
 
-Make sure you save the program after pasting in the code. If you see a ⚫️ next to the file in VS Code, that mean's it's not yet saved. You can use File > Save or your standard keyboard shortcut for saving.
-
-**Try it:**
-
-In the VS Code terminal at the bottom of the editor, run:
+Run it:
 
 ```bash
-python agent.py
+go mod tidy && go run .
 ```
 
-Send the message `Hello!` to the agent.
-
-If you see a 404 error, check that the endpoint URL in your '.env' file ends with "/anthropic" and not with "/v1/messages".
-
-Type **exit** when you're done to stop the agent. (If you're used to running Python programs on a Mac, CTRL+C will not exit the program - you must type **exit** instead.)
+Send two related messages. 'agent.WithSession(session)' lets Agent Framework
+carry the first turn into the second.
 
 ---
 
-✅ **In this step you have:** wired up an 'AnthropicFoundryClient', wrapped
-it in an 'Agent', and chatted with your Claude deployment from your own
-code.
+✅ **In this step you have:** connected to a Foundry model with its endpoint
+and API key, created an agent, and held a multi-turn conversation.
 
-➡️ Click **Next** to give the agent some real tools via MCP.
+➡️ Click **Next** to connect MCP tools.

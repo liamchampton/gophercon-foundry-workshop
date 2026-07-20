@@ -119,7 +119,7 @@ The 'chat' helper sends every message through the same Agent Framework
 
 ### 5. Display the Banner and Start the Conversation
 
-Find these two lines before the scanner is created:
+Find these two lines, where the scanner is created:
 
 ```go-notype
 fmt.Println("Type 'exit' to quit.")

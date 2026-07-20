@@ -1,6 +1,6 @@
 ## Step 1 - Hello World Agent
 
-Create a Microsoft Foundry-backed agent and reuse one Agent Framework session
+Create an agent backed by a Microsoft Foundry model and reuse one Agent Framework session
 for the whole conversation.
 
 Replace 'main.go' with:

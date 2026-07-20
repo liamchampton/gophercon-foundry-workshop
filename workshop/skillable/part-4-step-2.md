@@ -3,15 +3,7 @@
 Agent Framework can adapt tools discovered by an MCP client and execute them
 automatically. You do not need to parse function calls or build a tool loop.
 
-### Before You Start
-
-A **credential** is information an application uses to prove that it is
-allowed to call a service. In Step 1, your '.env' file provided the Foundry
-credential in 'FOUNDRY_API_KEY'. The call to 'godotenv.Load()' loads that value
-for the Go program.
-
-You do not need to create or copy another credential in this step. The Cupcake
-Store MCP endpoint used by this workshop does not require sign-in.
+> **Note:** You do not need to create or copy another credential in this step. The Cupcake Store MCP endpoint used by this workshop does not require sign-in.
 
 ### 1. Add the MCP Imports
 
@@ -94,11 +86,12 @@ In the terminal, run:
 go mod tidy && go run .
 ```
 
+**Do not try and order a Cupcake yet.**
+
 Try these prompts:
 
 - 'What cupcake flavors are available?'
 - 'Which are in stock?'
-- 'Order one for me.'
 
 The model decides when a tool is needed. Agent Framework calls the MCP tool,
 sends its result back to the model, and returns the final response.
